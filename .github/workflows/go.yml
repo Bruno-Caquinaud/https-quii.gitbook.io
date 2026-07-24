@@ -21,11 +21,8 @@ jobs:
       with:
         go-version: '1.26'
 
-    - name: Move to Hello World section
-      run: cd Hello-World && ls
+    - name: Build Hello World section
+      run: cd Hello-World && go build -v .
 
-    - name: Build
-      run: ls && go build -v .
-
-    - name: Test
-      run: go test -v .
+    - name: Test Hello World section
+      run: cd Hello-World && go test -v .
