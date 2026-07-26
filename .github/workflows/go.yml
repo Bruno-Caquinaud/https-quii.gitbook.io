@@ -26,3 +26,9 @@ jobs:
 
     - name: Test Hello World section
       run: cd Hello-World && go test -v .
+
+    - name: Build Integers section
+      run: cd Integers && go build -v .
+
+    - name: Test Integers section
+      run: cd Integers && go test -v .
