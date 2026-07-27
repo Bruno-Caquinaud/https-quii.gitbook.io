@@ -1,0 +1,70 @@
+name: Go Test & Coverage
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run tests with coverage
+        run: |
+          go test \
+            -covermode=atomic \
+            -coverpkg=./... \
+            -coverprofile=coverage.out \
+            ./...
+
+      - name: Display coverage
+        run: |
+          go tool cover -func=coverage.out
+
+      - name: Generate HTML report
+        run: |
+          go tool cover -html=coverage.out -o coverage.html
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage.out
+            coverage.html
+      - name: Check coverage threshold
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
+
+          echo "Coverage: ${COVERAGE}%"
+
+          THRESHOLD=80.0
+
+          awk -v c="$COVERAGE" -v t="$THRESHOLD" 'BEGIN {
+            if (c < t) {
+              printf "Coverage %.2f%% is below threshold %.2f%%\n", c, t;
+              exit 1;
+            } else {
+              printf "Coverage %.2f%% meets threshold %.2f%%\n", c, t;
+            }
+          }'
