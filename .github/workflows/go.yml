@@ -24,14 +24,5 @@ jobs:
       with:
         go-version: '1.26'
 
-    - name: Build Hello World section
-      run: cd Hello-World && go build -v .
-
-    - name: Test Hello World section
-      run: cd Hello-World && go test -v .
-
-    - name: Build Integers section
-      run: cd Integers && go build -v .
-
-    - name: Test Integers section
-      run: cd Integers && go test -v .
+    - name: Build
+      run: go test -v ./...
