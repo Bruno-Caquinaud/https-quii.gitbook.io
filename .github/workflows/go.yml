@@ -24,5 +24,11 @@ jobs:
       with:
         go-version: '1.26'
 
-    - name: Build
+    - name: Build & Test Packages
       run: go test -v ./...
+
+    - name: Check Data Race
+      run: go test ./Concurrency -v -race
+
+    - name: Run Benchmark Only
+      run: go test ./Concurrency -run=^$ -bench=. -benchmem -v
