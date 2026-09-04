@@ -24,14 +24,13 @@ func (s *SpyStore) Fetch(ctx context.Context) (string, error) {
 			case <-ctx.Done():
 				return
 			default:
-
+				time.Sleep(10 * time.Millisecond)
 				result += string(c)
 			}
 		}
 		channel <- result
 	}()
 
-	time.Sleep(10 * time.Millisecond)
 	select {
 	case <-ctx.Done():
 		return "", ctx.Err()
